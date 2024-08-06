@@ -23,3 +23,9 @@ go.work.sum
 
 # env file
 .env
+
+# data folder with CSV files
+data/
+
+# MacOS
+.DS_Store
