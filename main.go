@@ -15,7 +15,10 @@ func main() {
 	}
 	defer file.Close()
 
-	parsedWatchlist := watchlist.ReadWatchlist(file)
-	fmt.Printf("%+v", parsedWatchlist)
+	parsedWatchlist, err := watchlist.ReadWatchlist(file)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("%+v\n", parsedWatchlist)
 	fmt.Println(parsedWatchlist[0].Created.Format(time.DateOnly))
 }

@@ -3,7 +3,6 @@ package watchlist
 import (
 	"encoding/csv"
 	"io"
-	"log"
 	"time"
 )
 
@@ -23,13 +22,13 @@ type Watchlist struct {
 	ReleaseDate time.Time
 }
 
-func ReadWatchlist(file io.Reader) []Watchlist {
+func ReadWatchlist(file io.Reader) ([]Watchlist, error) {
 	reader := csv.NewReader(file)
 	reader.FieldsPerRecord = 0
 
 	data, err := reader.ReadAll()
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
 	var watchlist []Watchlist
@@ -46,7 +45,7 @@ func ReadWatchlist(file io.Reader) []Watchlist {
 			case CREATED:
 				item.Created, err = time.Parse("2006-01-02", field)
 				if err != nil {
-					log.Fatalln(err)
+					return nil, err
 				}
 			case TITLE:
 				item.Title = field
@@ -57,7 +56,7 @@ func ReadWatchlist(file io.Reader) []Watchlist {
 			case RELEASE_DATE:
 				item.ReleaseDate, err = time.Parse("2006-01-02", field)
 				if err != nil {
-					log.Fatalln(err)
+					return nil, err
 				}
 			}
 		}
@@ -65,5 +64,5 @@ func ReadWatchlist(file io.Reader) []Watchlist {
 		watchlist = append(watchlist, item)
 	}
 
-	return watchlist
+	return watchlist, nil
 }
