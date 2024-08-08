@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"watchlist-exporter/config"
+	"watchlist-exporter/internal/notion"
 	"watchlist-exporter/internal/watchlist"
 )
 
@@ -26,6 +26,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error reading watchlist: %v", err)
 	}
-	fmt.Printf("%+v\n", parsedWatchlist)
-	fmt.Println(parsedWatchlist[0].Created.Format(time.DateOnly))
+	if len(parsedWatchlist) == 0 {
+		fmt.Println("Empy watchlist")
+		os.Exit(0)
+	}
+
+	notionClient := notion.New(cfg.NotionKey)
+	database, err := notionClient.CreateDatabase(cfg.NotionPageID, "Watchlist DB", true)
+	if err != nil {
+		log.Fatalf("Error creating database: %v", err)
+	}
+
+	pagesCreated, err := notionClient.ExportWathlist(database.ID, parsedWatchlist)
+	if err != nil {
+		log.Fatalf("Error creating page: %v. Created %d pages", err, pagesCreated)
+	}
+
+	fmt.Printf("Created %d pages\n", pagesCreated)
 }
