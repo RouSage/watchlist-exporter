@@ -14,6 +14,7 @@ const (
 	TYPE         = "Type"
 	DATE_WATCHED = "Date Watched"
 	RELEASE_DATE = "Release Date"
+	STATUS       = "Status"
 )
 
 type notionClient struct {
@@ -52,6 +53,12 @@ func (notion *notionClient) CreateDatabase(parentPageID string, title string, is
 				},
 				DATE_WATCHED: notionapi.DatePropertyConfig{Type: "date"},
 				RELEASE_DATE: notionapi.DatePropertyConfig{Type: "date"},
+				STATUS: notionapi.SelectPropertyConfig{
+					Type: "select",
+					Select: notionapi.Select{
+						Options: []notionapi.Option{},
+					},
+				},
 			},
 		})
 }
@@ -115,6 +122,12 @@ func (notion *notionClient) createPage(databaseId notionapi.ObjectID, watchlist 
 					Type: "date",
 					Date: &notionapi.DateObject{
 						Start: (*notionapi.Date)(&watchlist.ReleaseDate),
+					},
+				},
+				STATUS: notionapi.SelectProperty{
+					Type: "select",
+					Select: notionapi.Option{
+						Name: "Watched",
 					},
 				},
 			},
