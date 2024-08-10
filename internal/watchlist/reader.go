@@ -2,7 +2,9 @@ package watchlist
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
+	"strings"
 	"time"
 )
 
@@ -36,6 +38,7 @@ func ReadWatchlist(file io.Reader) ([]Watchlist, error) {
 	for i, line := range data {
 		// Skip the header row
 		if i == 0 {
+			fmt.Printf("Header row: [%v]. Skipping...\n", strings.Join(line, ","))
 			continue
 		}
 
@@ -43,7 +46,7 @@ func ReadWatchlist(file io.Reader) ([]Watchlist, error) {
 		for j, field := range line {
 			switch j {
 			case CREATED:
-				item.Created, err = time.Parse("2006-01-02", field)
+				item.Created, err = parseDate(field)
 				if err != nil {
 					return nil, err
 				}
@@ -54,7 +57,7 @@ func ReadWatchlist(file io.Reader) ([]Watchlist, error) {
 			case TYPE:
 				item.Type = field
 			case RELEASE_DATE:
-				item.ReleaseDate, err = time.Parse("2006-01-02", field)
+				item.ReleaseDate, err = parseDate(field)
 				if err != nil {
 					return nil, err
 				}
@@ -64,5 +67,21 @@ func ReadWatchlist(file io.Reader) ([]Watchlist, error) {
 		watchlist = append(watchlist, item)
 	}
 
+	fmt.Printf("Parsed %d watchlist items\n", len(watchlist))
+
 	return watchlist, nil
+}
+
+func parseDate(date string) (time.Time, error) {
+	if len(date) == 7 {
+		// Try parsing the date as a month
+		return time.Parse("2006-01", date)
+	}
+
+	if len(date) == 4 {
+		// Try parsing the date as a year
+		return time.Parse("2006", date)
+	}
+
+	return time.Parse("2006-01-02", date)
 }

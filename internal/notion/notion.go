@@ -26,7 +26,9 @@ func New(token string) *notionClient {
 }
 
 func (notion *notionClient) CreateDatabase(parentPageID string, title string, isInline bool) (*notionapi.Database, error) {
-	return notion.client.Database.Create(
+	fmt.Printf("Creating database %q\n", title)
+
+	database, err := notion.client.Database.Create(
 		context.Background(),
 		&notionapi.DatabaseCreateRequest{
 			Parent: notionapi.Parent{
@@ -61,9 +63,24 @@ func (notion *notionClient) CreateDatabase(parentPageID string, title string, is
 				},
 			},
 		})
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("Database created with ID %q\n", database.ID)
+
+	return database, nil
+}
+
+func (notion *notionClient) GetDatabase(databaseId string) (*notionapi.Database, error) {
+	fmt.Printf("Retrieving database %q\n", databaseId)
+
+	return notion.client.Database.Get(context.Background(), notionapi.DatabaseID(databaseId))
 }
 
 func (notion *notionClient) ExportWathlist(databaseId notionapi.ObjectID, watchlist []watchlist.Watchlist) (int, error) {
+	fmt.Printf("Exporting %d watchlist items to database %q:\n\n", len(watchlist), databaseId)
+
 	pagesCreated := 0
 
 	for i, watchlist := range watchlist {
@@ -78,6 +95,8 @@ func (notion *notionClient) ExportWathlist(databaseId notionapi.ObjectID, watchl
 
 		pagesCreated += 1
 	}
+
+	fmt.Printf("Created %d pages as a result of exporting watchlist\n", pagesCreated)
 
 	return pagesCreated, nil
 }
