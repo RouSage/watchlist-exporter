@@ -1,5 +1,11 @@
 build:
-	go build -o out/watchlist-exporter main.go
+	go build -o watchlist-exporter -v
 
 test:
-	go test ./...
+	go test -v ./...
+
+clean:
+	rm -f watchlist-exporter
+
+deps:
+	go get ./...

@@ -19,7 +19,8 @@ This is a simple script that will export your IMDb watchlist (in a CSV format) t
 
     a. You should have a Notion API key and a Notion page ID after creating the integration.
 
-6. Now you can use the `go run main.go` command to export your watchlist to Notion.
+6. Install dependencies with `make deps`.
+7. Now you can use the `go run main.go` command to export your watchlist to Notion.
 
     a. Use the `--path` flag to specify the path to the CSV file.
 
@@ -39,5 +40,7 @@ go run main.go --path ./data/watchlist.csv --database-name "My Watchlist"
 
 ## Useful commands
 
--   `make test` - run tests
 -   `make build` - build the binary
+-   `make test` - run tests
+-   `make clean` - remove the binary
+-   `make deps` - install dependencies
