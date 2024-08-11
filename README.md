@@ -45,6 +45,11 @@ go run main.go --path ./data/watchlist.csv --database-id <database-id>
 go run main.go --path ./data/watchlist.csv --database-name "My Watchlist"
 ```
 
+Example of a resulting Notion database:
+
+<img width="1111" alt="image" src="https://github.com/user-attachments/assets/29dd2d90-457c-4995-9949-b16a65b6fabc">
+
+
 ## Useful commands
 
 - `make build` - build the binary
