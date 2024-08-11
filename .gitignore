@@ -21,6 +21,9 @@
 go.work
 go.work.sum
 
+# Output directory
+out/
+
 # env file
 .env
 
